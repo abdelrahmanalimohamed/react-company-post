@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import UploadForm from "./UploadForm";
 import ContractorForm from "./ContractsForm";
 import AllPosts from "./AllPosts";
+import AllContracts from "./AllContracts";
 
 interface Props {
   onLogout: () => void;
@@ -9,7 +10,7 @@ interface Props {
 }
 
 export default function FormTabs({ onLogout, userEmail }: Props) {
-  const [activeTab, setActiveTab] = useState<"upload" | "contractor" | "allposts">("upload");
+  const [activeTab, setActiveTab] = useState<"upload" | "contractor" | "allposts" | "allcontracts">("upload");
 
   return (
     <div dir="rtl" className="w-full max-w-4xl bg-white shadow-md rounded-2xl p-6">
@@ -46,6 +47,17 @@ export default function FormTabs({ onLogout, userEmail }: Props) {
         >
           كل المستندات
         </button>
+
+         <button
+          onClick={() => setActiveTab("allcontracts")}
+          className={`px-4 py-2 text-sm font-medium ${
+            activeTab === "allcontracts"
+              ? "border-b-2 border-indigo-600 text-indigo-600"
+              : "text-gray-500"
+          }`}
+        >
+          كل العقود
+        </button>
       </div>
 
       {/* Tabs content */}
@@ -57,6 +69,9 @@ export default function FormTabs({ onLogout, userEmail }: Props) {
       )}
       {activeTab === "allposts" && (
         <AllPosts onLogout={onLogout} userEmail={userEmail} />
+      )}
+       {activeTab === "allcontracts" && (
+        <AllContracts onLogout={onLogout} userEmail={userEmail} />
       )}
     </div>
   );

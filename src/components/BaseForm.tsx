@@ -57,13 +57,17 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">{title}</h2>
+        <div>
+          <h2 className="text-xl font-semibold">جميع المستندات</h2>
+          <p className="text-sm text-gray-500">
+            مسجل دخول: <span className="font-medium">{userEmail}</span>
+          </p>
+        </div>
         <button
-          type="button"
           onClick={onLogout}
-          className="text-sm text-red-500 hover:underline"
+          className="text-sm px-3 py-2 rounded-md border"
         >
-          تسجيل الخروج
+          تسجيل خروج
         </button>
       </div>
 
