@@ -20,7 +20,6 @@ export default function LoginForm({ onLogin }: Props) {
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
-    // Check credentials
     if (email !== "admin@yahoo.com" || password !== "123456789") {
       setErrors({ email: "Wrong email or password" });
       return;

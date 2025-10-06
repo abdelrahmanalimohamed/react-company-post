@@ -153,7 +153,7 @@ export default function ContractsForm({ onLogout, userEmail }: Props) {
 
           {/* Purchase Order Ref */}
           <label className="block mb-4">
-            <span className="text-sm text-gray-600">مرجع أمر الشراء</span>
+            <span className="text-sm text-gray-600">مرجع أمر التوريد</span>
             <input
               type="text"
               name="purchase_order_ref"

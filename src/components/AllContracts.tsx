@@ -7,7 +7,7 @@ interface Contract {
   contract_number: string;
   details: string;
   notes: string;
-  contract_date: string; // Use string if coming from API, or Date if parsed
+  contract_date: string;
   project_name: string;
   created_by: string;
   currency: string;
@@ -26,34 +26,68 @@ export default function AllContracts({ onLogout, userEmail }: Props) {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-    useEffect(() => {
-      async function fetchPosts() {
-        setLoading(true);
-        setError(null);
-        try {
-          const response = await fetch(`${API_BASE_URL}/Contracts/get-contracts`);
-          if (!response.ok) throw new Error("Failed to fetch posts");
-          const data = await response.json();
-          setContracts(data);
-        } catch (err: any) {
-          console.error(err);
-          setError("فشل تحميل البيانات ❌");
-        } finally {
-          setLoading(false);
-        }
+
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
+  const [dropdown1, setDropdown1] = useState<string>("");
+  const [dropdown2, setDropdown2] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`${API_BASE_URL}/Contracts/get-contracts`);
+        if (!response.ok) throw new Error("Failed to fetch posts");
+        const data = await response.json();
+        setContracts(data);
+      } catch (err: any) {
+        console.error(err);
+        setError("فشل تحميل البيانات ❌");
+      } finally {
+        setLoading(false);
       }
-  
-      fetchPosts();
-    }, []);
-
-function getAttachmentUrl(path?: string) {
-      if (!path) return null;
-      const base = API_BASE_URL.replace(/\/api$/, "");
-      return `${base}${path.startsWith("/") ? "" : "/"}${path}`;
     }
+    fetchPosts();
+  }, []);
 
-      return (
+  function getAttachmentUrl(path?: string) {
+    if (!path) return null;
+    const base = API_BASE_URL.replace(/\/api$/, "");
+    return `${base}${path.startsWith("/") ? "" : "/"}${path}`;
+  }
+
+  // Handle Update button click
+  function handleUpdate(contract: Contract) {
+    setSelectedContract(contract);
+    setDropdown1(""); // Reset dropdowns
+    setDropdown2("");
+    setFile(null);
+    setShowModal(true);
+  }
+
+  // Handle Delete button click
+  async function handleDelete(id: string) {
+    if (!window.confirm("هل أنت متأكد من حذف هذا العقد؟")) return;
+    try {
+      await fetch(`${API_BASE_URL}/Contracts/delete-contract/${id}`, { method: "DELETE" });
+      setContracts(contracts.filter(c => c.id !== id));
+    } catch (err) {
+      alert("فشل الحذف");
+    }
+  }
+
+  // Handle modal form submit (Update)
+  async function handleModalSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    // Example: send update request here
+    // You can add file upload logic as needed
+    setShowModal(false);
+  }
+
+  return (
     <div dir="rtl" className="w-full max-w-5xl bg-white shadow-md rounded-2xl p-8">
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -93,6 +127,7 @@ function getAttachmentUrl(path?: string) {
                 <th className="border p-2">مرجع أمر الشراء</th>
                 <th className="border p-2">المقاول</th>
                 <th className="border p-2">المرفقات</th>
+                <th className="border p-2">إجراءات</th>
             </tr>
           </thead>
           <tbody>
@@ -119,10 +154,93 @@ function getAttachmentUrl(path?: string) {
                     "لا يوجد"
                   )}
                 </td>
+                <td className="border p-2">
+                  <button
+                    className="bg-yellow-400 px-2 py-1 rounded mr-2"
+                    onClick={() => handleUpdate(contract)}
+                  >
+                    تحديث
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 rounded"
+                    onClick={() => handleDelete(contract.id)}
+                  >
+                    حذف
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+      )}
+
+      {/* Modal */}
+      {showModal && selectedContract && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4">تحديث العقد</h3>
+            <form onSubmit={handleModalSubmit}>
+              <div className="mb-3">
+                <label className="block mb-1">رقم العقد:</label>
+                <input
+                  type="text"
+                  value={selectedContract.contract_number}
+                  disabled
+                  className="border rounded px-2 py-1 w-full"
+                />
+              </div>
+              <div className="mb-3">
+                <label className="block mb-1">القائمة الأولى:</label>
+                <select
+                  value={dropdown1}
+                  onChange={e => setDropdown1(e.target.value)}
+                  className="border rounded px-2 py-1 w-full"
+                  required
+                >
+                  <option value="">اختر</option>
+                  <option value="option1">خيار 1</option>
+                  <option value="option2">خيار 2</option>
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="block mb-1">القائمة الثانية:</label>
+                <select
+                  value={dropdown2}
+                  onChange={e => setDropdown2(e.target.value)}
+                  className="border rounded px-2 py-1 w-full"
+                  required
+                >
+                  <option value="">اختر</option>
+                  <option value="optionA">خيار A</option>
+                  <option value="optionB">خيار B</option>
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="block mb-1">رفع ملف:</label>
+                <input
+                  type="file"
+                  onChange={e => setFile(e.target.files?.[0] || null)}
+                  className="border rounded px-2 py-1 w-full"
+                />
+              </div>
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  type="button"
+                  className="px-3 py-1 rounded bg-gray-300"
+                  onClick={() => setShowModal(false)}
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-3 py-1 rounded bg-blue-600 text-white"
+                >
+                  حفظ
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

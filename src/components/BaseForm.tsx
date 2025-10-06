@@ -27,6 +27,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 
   const form = e.currentTarget;
   const formData = new FormData(form);
+  //console.log("Form Data Entries:" + [...formData.entries()]); ;
 
   try {
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -35,13 +36,15 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to save data");
+      const errorData = await res.json().catch(() => null);
+      const serverMessage = errorData?.Message || res.statusText;
+      throw new Error(serverMessage || "فشل في الحفظ ❌");
     }
 
-    const data = await res.json();
-    // Match PascalCase from ASP.NET response
+    const data = await res;
     setMessage(data.Message || "تم الحفظ بنجاح ✅");
     form.reset();
+    
   } catch (err: any) {
     setMessage(err.message || "حدث خطأ أثناء الحفظ ❌");
   } finally {
@@ -58,7 +61,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-xl font-semibold">جميع المستندات</h2>
+          <h2 className="text-xl font-semibold">{title}</h2>
           <p className="text-sm text-gray-500">
             مسجل دخول: <span className="font-medium">{userEmail}</span>
           </p>
@@ -70,19 +73,21 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
           تسجيل خروج
         </button>
       </div>
-
-      {/* Shared fields */}
-      <label className="block mb-4">
-        <span className="text-sm text-gray-600">اسم المستند</span>
-        <input
-          type="text"
-          className="mt-1 block w-full rounded-md p-3 border border-gray-200"
-          placeholder="أدخل اسم المستند"
-        />
-      </label>
       {/* 👇 Specific contractor fields injected here */}
       {extraFields}
 
+      {/* Message display */}
+      {message && (
+        <div
+          className={`mb-4 p-3 rounded ${
+            message.includes("نجاح")
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {message}
+        </div>
+      )}
       {/* Submit */}
       <button
         type="submit"
