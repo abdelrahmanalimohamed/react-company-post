@@ -13,9 +13,9 @@ export default function InComing({ onLogout, userEmail }: Props) {
   const [projects , setProjects] = useState<{ id: string; name: string }[]>([]);
   const [selection, setSelection] = useState("");
   const [options, setOptions] = useState<{ id: string; name: string }[]>([]);
-  const [publishedId, setPublishedId] = useState("");
+  const [PublishedId, setPublishedId] = useState("");
   const [OriginalPublisherId, setOriginalPublisherId] = useState("");
-  const [projectId, setProjectId] = useState("");
+  const [ProjectId, setProjectId] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState("");
   const [serialNumber, setSerialNumber] = useState<number>();
   const [documentType, setDocumentType] = useState("");
@@ -32,7 +32,7 @@ export default function InComing({ onLogout, userEmail }: Props) {
             .then((data) => setProjects(data))
             .catch(() => setProjects([]));
 
-    fetch(`${API_BASE_URL}/PostTransformer/GetPostTransformerMaxSerialNumber`)
+    fetch(`${API_BASE_URL}/Incoming/GetIncomingMaxSerialNumber`)
             .then((res) => res.json())
             .then((data) => setSerialNumber(data))
             .catch(() => setSerialNumber(0));
@@ -58,7 +58,7 @@ export default function InComing({ onLogout, userEmail }: Props) {
   return (
     <BaseForm
       title="وارد"
-      endpoint="/PostTransformer/CreatePostTransformer"
+      endpoint="/Incoming/CreateIncoming"
       onLogout={onLogout}
       userEmail={userEmail}
       extraFields={
@@ -123,7 +123,7 @@ export default function InComing({ onLogout, userEmail }: Props) {
         </span>
         <select
           name="PublishedId"
-          value={publishedId}
+          value={PublishedId}
           onChange={(e) => setPublishedId(e.target.value)}
           className="mt-1 block w-full rounded-md p-3 border border-gray-200"
           disabled={!options.length}
@@ -146,7 +146,6 @@ export default function InComing({ onLogout, userEmail }: Props) {
           value={OriginalPublisherId}
           onChange={(e) => setOriginalPublisherId(e.target.value)}
           className="mt-1 block w-full rounded-md p-3 border border-gray-200"
-          disabled={!options.length}
         >
           <option value="">اختر</option>
           {projectsAndDepartments.map((item) => (
@@ -163,10 +162,10 @@ export default function InComing({ onLogout, userEmail }: Props) {
         </span>
         <select
           name="ProjectId"
-          value={projectId}
+          value={ProjectId}
           onChange={(e) => setProjectId(e.target.value)}
           className="mt-1 block w-full rounded-md p-3 border border-gray-200"
-          disabled={!options.length}
+          disabled={!projects.length}
         >
           <option value="">اختر</option>
           {projects.map((item) => (
@@ -231,7 +230,7 @@ export default function InComing({ onLogout, userEmail }: Props) {
             <span className="text-sm text-gray-600">تاريخ الحفظ</span>
             <input
               type="date"
-              name="DeliveryDate"
+              name="SaveDate"
               className="mt-1 block w-full rounded-md p-3 border border-gray-200"
               required
             />

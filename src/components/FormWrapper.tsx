@@ -75,27 +75,7 @@ export default function FormTabs({ onLogout, userEmail }: Props) {
           عقود
         </button>
 
-         <button
-          onClick={() => setActiveTab("allposts")}
-          className={`px-4 py-2 text-sm font-medium ${
-            activeTab === "allposts"
-              ? "border-b-2 border-indigo-600 text-indigo-600"
-              : "text-gray-500"
-          }`}
-        >
-          كل المستندات
-        </button>
 
-         <button
-          onClick={() => setActiveTab("allcontracts")}
-          className={`px-4 py-2 text-sm font-medium ${
-            activeTab === "allcontracts"
-              ? "border-b-2 border-indigo-600 text-indigo-600"
-              : "text-gray-500"
-          }`}
-        >
-          كل العقود
-        </button>
 
       </div>
 
@@ -115,12 +95,12 @@ export default function FormTabs({ onLogout, userEmail }: Props) {
       {activeTab === "contractor" && (
         <ContractorForm onLogout={onLogout} userEmail={userEmail} />
       )}
-      {activeTab === "allposts" && (
+      {/* {activeTab === "allposts" && (
         <AllPosts onLogout={onLogout} userEmail={userEmail} />
       )}
        {activeTab === "allcontracts" && (
         <AllContracts onLogout={onLogout} userEmail={userEmail} />
-      )}
+      )} */}
     </div>
   );
 }
