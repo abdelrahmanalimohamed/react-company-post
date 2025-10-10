@@ -82,7 +82,7 @@ export default function PostTransformer({ onLogout, userEmail }: Props) {
               name="SerialNumber"
               className="mt-1 block w-full rounded-md p-3 border border-gray-200"
               placeholder="أدخل الرقم التسلسلي"
-              value={serialNumber}
+             value={`TRN - ${serialNumber}`}
               readOnly
             />
           </label>

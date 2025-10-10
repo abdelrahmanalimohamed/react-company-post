@@ -40,7 +40,7 @@ export default function PostInternal({ onLogout, userEmail }: Props) {
             .catch(() => setDeliveryDirection([]));
 
     } else if (deliverySelectedOption === "Project") {
-      fetch(`${API_BASE_URL}/Projects/get-projects`)
+      fetch(`${API_BASE_URL}/Publisher/get-projects`)
         .then((res) => res.json())
         .then((data) => setDeliveryDirection(data))
         .catch(() => setDeliveryDirection([]));
@@ -82,7 +82,7 @@ export default function PostInternal({ onLogout, userEmail }: Props) {
               name="SerialNumber"
               className="mt-1 block w-full rounded-md p-3 border border-gray-200"
               placeholder="أدخل الرقم التسلسلي"
-              value={serialNumber}
+              value={`Internal - ${serialNumber}`}
               readOnly
             />
           </label>

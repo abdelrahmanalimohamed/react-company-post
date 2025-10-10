@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ContractorForm from "./ContractsForm";
-import AllPosts from "./AllPosts";
-import AllContracts from "./AllContracts";
+// import AllPosts from "./AllPosts";
+// import AllContracts from "./AllContracts";
 import PostInternal from "./PostInternal";
 import PostExternal from "./PostExternal";
 import PostTransformer from "./PostTransformer";

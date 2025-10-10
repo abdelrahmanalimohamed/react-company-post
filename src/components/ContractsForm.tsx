@@ -10,18 +10,25 @@ interface Props {
 export default function ContractsForm({ onLogout, userEmail }: Props) {
   const [projects, setProjects] = useState<{ id: string; name: string }[]>([]);
   const [contractors, setContractors] = useState<{ id: string; name: string }[]>([]);
+  const [serialNumber, setSerialNumber] = useState<number>();
 
   // Fetch dropdown data
   useEffect(() => {
-    fetch(`${API_BASE_URL}/Projects/get-projects`)
+    fetch(`${API_BASE_URL}/Publisher/get-projects`)
       .then((res) => res.json())
       .then((data) => setProjects(data))
       .catch(() => setProjects([]));
 
-    fetch(`${API_BASE_URL}/PersonOrg/get-person-orgs`)
+    fetch(`${API_BASE_URL}/Publisher/get-suppliers`)
       .then((res) => res.json())
       .then((data) => setContractors(data))
       .catch(() => setContractors([]));
+
+      
+    fetch(`${API_BASE_URL}/Contracts/GetContractMaxSerialNumber`)
+                  .then((res) => res.json())
+                  .then((data) => setSerialNumber(data))
+                  .catch(() => setSerialNumber(0));
   }, []);
 
   return (
@@ -32,6 +39,18 @@ export default function ContractsForm({ onLogout, userEmail }: Props) {
       userEmail={userEmail}
       extraFields={
         <>
+      <label className="block mb-4">
+            <span className="text-sm text-gray-600">الرقم التسلسلي</span>
+            <input
+              type="text"
+              name="SerialNumber"
+              className="mt-1 block w-full rounded-md p-3 border border-gray-200"
+              placeholder="أدخل الرقم التسلسلي"
+              value={serialNumber}
+              readOnly
+            />
+          </label>
+          
           {/* Value */}
           <label className="block mb-4">
             <span className="text-sm text-gray-600">قيمة العقد</span>

@@ -14,7 +14,7 @@ export default function PostExternal({ onLogout, userEmail }: Props) {
   const [options, setOptions] = useState<{ id: string; name: string }[]>([]);
   const [publishedId, setPublishedId] = useState("");
   const [deliveryDirection, setDeliveryDirection] = useState<{ id: string; name: string }[]>([]);
-  const [deliverySelectedOption, setDeliverysetSelectedOption] = useState("");
+  //const [deliverySelectedOption, setDeliverysetSelectedOption] = useState("");
   const [recivedFromId, setRecivedFromId] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState("");
   const [serialNumber, setSerialNumber] = useState<number>();
@@ -30,23 +30,12 @@ export default function PostExternal({ onLogout, userEmail }: Props) {
             .then((res) => res.json())
             .then((data) => setSerialNumber(data))
             .catch(() => setSerialNumber(0));
-  }, []);
 
-   useEffect(() => {
-    if (deliverySelectedOption === "Department") {
-    fetch(`${API_BASE_URL}/Department/get-departments`)
+    fetch(`${API_BASE_URL}/Publisher/get-suppliers`)
         .then((res) => res.json())
           .then((data) => setDeliveryDirection(data))
             .catch(() => setDeliveryDirection([]));
-
-    } else if (deliverySelectedOption === "Project") {
-      fetch(`${API_BASE_URL}/Projects/get-projects`)
-        .then((res) => res.json())
-        .then((data) => setDeliveryDirection(data))
-        .catch(() => setDeliveryDirection([]));
-
-    }
-  }, [deliverySelectedOption]);
+  }, []);
 
   useEffect(() => {
     if (selection === "Department") {
@@ -81,7 +70,7 @@ export default function PostExternal({ onLogout, userEmail }: Props) {
               name="SerialNumber"
               className="mt-1 block w-full rounded-md p-3 border border-gray-200"
               placeholder="أدخل الرقم التسلسلي"
-              value={serialNumber}
+              value={`OUT-${serialNumber}`}
               readOnly
             />
           </label>
@@ -148,28 +137,14 @@ export default function PostExternal({ onLogout, userEmail }: Props) {
       </label>
 
       <label className="block mb-4">
-            <span className="text-sm text-gray-600"> جهة التسليم</span>
-            <select
-                value={deliverySelectedOption}
-                onChange={(e) => setDeliverysetSelectedOption(e.target.value)}
-                className="mt-1 block w-full rounded-md p-3 border border-gray-200"
-            >
-                <option value="">اختر</option>
-                <option value="Department">إدارة</option>
-                <option value="Project">مشروع</option>
-            </select>
-             </label>
-
-             <label className="block mb-4">
         <span className="text-sm text-gray-600">
-            مستلم من قبل
+           جهة التسليم
         </span>
         <select
           name="RecivedFromId" 
           value={recivedFromId}
           onChange={(e) => setRecivedFromId(e.target.value)}
           className="mt-1 block w-full rounded-md p-3 border border-gray-200"
-          disabled={!options.length}
         >
           <option value="">اختر</option>
           {deliveryDirection.map((item) => (
